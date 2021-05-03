@@ -1,0 +1,24 @@
+Cada alumno tiene que crear en un repositorio una app que liste y elimine 
+ítems, como la todo-list, pero con más campos. Se va a tratar de una lista 
+de posiciones laborales. 
+Por cada ítem debe presentar: 
+    -- nombre del puesto, 
+    -- empresa, 
+    -- ciudad, 
+    -- país. 
+
+Pre-requisitos
+
+En el repositorio deben existir tres ramas: 
+    -- main o master, 
+    -- development y 
+    -- feature/actividad-1, 
+se va a trabajar sobre la feature
+
+Requisitos (solo puede faltar uno como maximo)
+    -- El componente debe permitir agregar nuevos items
+    -- Los items a agregar deben tener las 4 propiedades solicitadas
+    -- Se debe poder eliminar items
+    -- No se debe dejar agregar propiedades en blanco (ninguna)
+    -- Utilizar clases propias de css o de Bootstrap para el estilo general 
+       del componente 
