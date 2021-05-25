@@ -1,4 +1,5 @@
 import React from 'react';
+import { Storage } from "../utils/Storage";
 
 export default class PageTable extends React.Component {
     constructor (props) {
@@ -17,10 +18,14 @@ export default class PageTable extends React.Component {
         }
     }
 
+    saveData = () => {
+      Storage.setData('jobs', this.state.values)
+    }
+
     render () {
         const {headers, values} = this.state;
         return (                 
-            <table>
+            <table className="table table-striped">
                 <thead>
                     <tr>
                     <th>#</th>
@@ -36,16 +41,21 @@ export default class PageTable extends React.Component {
                         return (
                         <tr key={index}>
                             <td>{index + 1}</td>
-                            { row.map((item, index2) => { 
-                            return <td key={index2}>{ item }</td> 
-                            } 
-                            )}
+                            <td>{row.name}</td> 
+                            <td>{Storage.findById('companies', row.company)}</td> 
+                            <td>{Storage.findById('cities', row.city)}</td> 
+                            <td>{Storage.findById('countries', row.country)}</td> 
                             <td>
                                 <button className="btn btn-danger" onClick={() => this.props.onRemove(index)}>X</button>
                             </td>
                         </tr>
                         )} )
                     } 
+                    <tr>
+                        <td colspan="6" align="center">
+                            <button onClick={this.saveData}>Guardar</button>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         )
