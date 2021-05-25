@@ -1,7 +1,8 @@
 import React from 'react';
-import PageTable from './PageTable';
-import PageForm from './PageForm';
-import PageMessage from './PageMessage';
+import PageTable from '../components/PageTable';
+import PageForm from '../components/PageForm';
+import PageMessage from '../components/PageMessage';
+import { Storage } from "../utils/Storage";
 
 export default class Page extends React.Component {
     constructor (props) {
@@ -12,10 +13,24 @@ export default class Page extends React.Component {
             inputValues : ["nombre del puesto", "empresa", "ciudad", "pais",],
             result : ["","","",""],
             message : "",
+            countries: [],
+            cities: [],
+            citiesOptions: [{name: 'Seleccione un Pais', country: null}],
+            companies: [],
+            companiesOptions: [{name: 'Seleccione una Ciudad', city: null}],
         }
         this.handleInput = this.handleInput.bind(this);
         this.addRow = this.addRow.bind(this);
         this.removeRow = this.removeRow.bind(this);
+    }
+
+    componentDidMount() {
+      this.setState({
+        countries: Storage.getData('countries'),
+        cities: Storage.getData('cities'),
+        companies: Storage.getData('companies'),
+        lists: Storage.getData('jobs')
+      })
     }
 
     isEmpty(collection) {
@@ -31,8 +46,15 @@ export default class Page extends React.Component {
       //console.log("add");
       if (this.isEmpty(this.state.result) === false) {
         this.setState({ message : "success" });
+
+        let auxJob = { 
+          name: this.state.result[3],
+          company: this.state.result[2],
+          city: this.state.result[1],
+          country: this.state.result[0],
+        };
         let newArr = [...this.state.lists]; 
-        newArr.push(this.state.result);
+        newArr.push(auxJob);
         this.setState({
           lists: newArr
         });                                  
@@ -58,13 +80,20 @@ export default class Page extends React.Component {
       this.setState({
         result: newArr
       })
+      if(event.target.id === 'formCountry'){ 
+        this.setState({citiesOptions: Storage.filterData('cities','country',event.target.value) });
+      }
+      if(event.target.id === 'formCity'){ 
+        this.setState({companiesOptions: Storage.filterData('companies','city',event.target.value) });
+      }
     } 
 
     render () {                      
         return (
           <div className="container">
+            <br/>           
             <div>
-              <PageMessage message={this.state.message}/>
+              <PageMessage message={this.state.message}/>              
             </div>
             <div className="row">
               <div className="col">             
@@ -72,6 +101,12 @@ export default class Page extends React.Component {
                   inputs={this.state.inputValues} 
                   onChange={this.handleInput} 
                   onAdd={this.addRow}
+                  countries={this.state.countries}
+                  cities={this.state.cities}
+                  companies={this.state.companies}
+                  citiesOptions={this.state.citiesOptions}
+                  companiesOptions={this.state.companiesOptions}
+
                 />
               </div>
               <div className="col">   
