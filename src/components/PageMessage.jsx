@@ -9,15 +9,7 @@ export default class PageMessage extends React.Component {
         }
         this.aux = (<></>);
     }
-
-    componentDidUpdate(prevProps){
-        if(prevProps.message !== this.props.message){
-            this.setState({          
-                message: this.props.message
-            });
-        }
-    }
-
+    
     viewMessage() {
         
         if (this.state.message === 'error') {

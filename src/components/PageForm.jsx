@@ -24,6 +24,7 @@ export default class PageForm extends React.Component {
                     id="formCountry"
                     onChange={(e) => this.props.onChange(e, 0)} 
                     type="text"
+                    value={this.props.values[0]}
                   >
                     <option value="">
                       Elegir Pais
@@ -31,6 +32,7 @@ export default class PageForm extends React.Component {
                     { 
                       this.props.countries.map((item, index) => { 
                         return (
+                          //selected={parseInt(this.props.values[0]) === parseInt(item.id)} 
                           <option key={index} value={item.id}>
                             { item.name }
                           </option> 
@@ -49,6 +51,7 @@ export default class PageForm extends React.Component {
                     id="formCity"
                     onChange={(e) => this.props.onChange(e, 1)} 
                     type="text"
+                    value={this.props.values[1]}
                   >
                     <option value="">
                       Elegir Ciudad
@@ -56,6 +59,7 @@ export default class PageForm extends React.Component {
                     { 
                       this.props.citiesOptions.map((item, index) => { 
                         return (
+                          //selected={parseInt(this.props.values[1]) === parseInt(item.id)} 
                           <option key={index} value={item.id}>
                             { item.name }
                           </option> 
@@ -75,6 +79,7 @@ export default class PageForm extends React.Component {
                     id="formCompany"
                     onChange={(e) => this.props.onChange(e, 2)} 
                     type="text"
+                    value={this.props.values[2]}
                   >
                     <option value="">
                       Elegir Empresa
@@ -82,7 +87,8 @@ export default class PageForm extends React.Component {
                     { 
                       this.props.companiesOptions.map((item, index) => { 
                         return (
-                          <option key={index} value={item.id}>
+                          //selected={parseInt(this.props.values[2]) === parseInt(item.id)}
+                          <option  key={index} value={item.id}>
                             { item.name }
                           </option> 
                         )
@@ -101,13 +107,35 @@ export default class PageForm extends React.Component {
                     id="formJob"
                     onChange={(e) => this.props.onChange(e, 3)} 
                     type="text"
+                    value={this.props.values[3]}
                   />
                 </div> 
               </span>                                  
+              <span className="row">
+                <label htmlFor="formDescription" className="col-sm-4 col-form-label">
+                  Descripcion: 
+                </label>
+                <div className="col-sm-8">
+                  <input 
+                    className="form-control"
+                    id="formDescription"
+                    onChange={(e) => this.props.onChange(e, 4)} 
+                    type="text"
+                    value={this.props.values[4]}
+                  />
+                </div> 
+              </span>
             </div>
             <div className="form-group row">
               <div className="col-sm-10">
-                <button onClick={ () => this.props.onAdd() } className="btn btn-primary">Agregar</button>                  
+                {
+                  (this.props.edit.edit === true) ? 
+                    <button onClick={ () => this.props.onUpdate(this.props.edit.id) } className="btn btn-primary">Editar</button> :
+                    <button onClick={ () => this.props.onAdd() } className="btn btn-primary">Agregar</button>                 
+
+                }
+                
+                
               </div>
             </div>
           </>

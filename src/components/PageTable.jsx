@@ -1,9 +1,27 @@
 import React from 'react';
 import { Storage } from "../utils/Storage";
+import {
+    createCountry,
+    deleteCountry,
+    getCountry,
+    getAllCountries, 
+    createCity,
+    deleteCity,
+    getCity,
+    getAllCities,
+    createCompany,
+    deleteCompany,
+    getAllCompanies,    
+    createJob,
+    deleteJob,
+    getJob,
+    getAllJobs
+} from '../rest/backend';
 
 export default class PageTable extends React.Component {
     constructor (props) {
         super(props);
+        this.props = props;
         this.state = {
             headers: this.props.headers,
             values: this.props.values
@@ -16,10 +34,6 @@ export default class PageTable extends React.Component {
                 values: this.props.values
             });
         }
-    }
-
-    saveData = () => {
-      Storage.setData('jobs', this.state.values)
     }
 
     render () {
@@ -38,24 +52,26 @@ export default class PageTable extends React.Component {
                 </thead>
                 <tbody>
                     { values.map((row, index) => { 
+                        let company = this.props.findDataById('companies', row.organizationId)
+                        let city = this.props.findDataById('cities', company.placeId)
+                        let country = this.props.findDataById('countries', city.countrieId)
                         return (
-                        <tr key={index}>
+                        <tr key={row.id}>
                             <td>{index + 1}</td>
-                            <td>{row.name}</td> 
-                            <td>{Storage.findById('companies', row.company)}</td> 
-                            <td>{Storage.findById('cities', row.city)}</td> 
-                            <td>{Storage.findById('countries', row.country)}</td> 
+                            <td>{row.position}</td> 
+                            <td>{row.description}</td>  
+                            <td>{company.name}</td>  
+                            <td>{city.name}</td>  
+                            <td>{country.name}</td>  
                             <td>
-                                <button className="btn btn-danger" onClick={() => this.props.onRemove(index)}>X</button>
+                                <button className="btn btn-danger" onClick={() => this.props.onRemove(row.id)}>X</button>
+                            </td>
+                            <td>
+                                <button className="btn btn-info" onClick={() => this.props.onEdit(row.id)}>Editar</button>
                             </td>
                         </tr>
                         )} )
                     } 
-                    <tr>
-                        <td colspan="6" align="center">
-                            <button onClick={this.saveData}>Guardar</button>
-                        </td>
-                    </tr>
                 </tbody>
             </table>
         )
