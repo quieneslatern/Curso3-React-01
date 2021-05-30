@@ -1,9 +1,53 @@
+import {
+	createCountry,
+	deleteCountry,
+    getCountry,
+	getAllCountries, 
+	createCity,
+	deleteCity,
+    getCity,
+	getAllCities,
+	createCompany,
+	deleteCompany,
+	getAllCompanies,    
+    createJob,
+    deleteJob,
+    getJob,
+    getAllJobs
+} from '../rest/backend';
+
+const ppepe = {
+    createCountry: createCountry,
+    deleteCountry: deleteCountry,
+    getCountry: getCountry,
+    getAllCountries: getAllCountries, 
+    createCity: createCity,
+    deleteCity: deleteCity,
+    getCity: getCity,
+    getAllCities: getAllCities,
+    createCompany: createCompany,
+    deleteCompany: deleteCompany,
+    getAllCompanies: getAllCompanies, 
+    createJob: createJob,
+    deleteJob: deleteJob,
+    getJob: getJob,
+    getAllJobs: getAllJobs,
+}
 export class Storage {
-  
+
     static getData(data) {
-        if(localStorage.getItem(data) != null) {            
-            return JSON.parse(localStorage.getItem([data]))
-        }
+        let getAll = 'getAll' + data.charAt(0).toUpperCase() + data.slice(1)
+        
+        console.log(getAll)
+        let result 
+        ppepe[getAll]()
+            .then((data) => {
+                console.log(data) 
+                return result = data
+            })
+            .catch(() => {
+                console.error('Error')
+            });   
     }
 
     static setData(data, value) {

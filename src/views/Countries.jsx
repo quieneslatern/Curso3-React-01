@@ -1,6 +1,9 @@
 import React from 'react';
-import { Storage } from "../utils/Storage";
-
+import {
+	createCountry,
+	deleteCountry,
+	getAllCountries,    
+} from '../rest/backend';
 export class Countries extends React.Component {
   constructor() {
     super();
@@ -11,9 +14,17 @@ export class Countries extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-      countries: Storage.getData('countries')
-    })
+    getAllCountries()
+      .then((countries) =>
+        this.setState({
+          countries: countries
+        })  
+      )
+      .catch(() =>
+        this.setState({
+          withError: true,
+        })
+      );    
   }
 
   setCountry = (e) => {
@@ -24,11 +35,23 @@ export class Countries extends React.Component {
 
   addCountry = () => {
     let auxCountry = { 
-      id: Storage.nextID(this.state.countries),
       name: this.state.country,
     };
-    this.setState({
-      countries: [...this.state.countries, auxCountry]
+    createCountry(auxCountry)
+      .then((createdCountry) => {
+        this.setState({
+          countries: [...this.state.countries, createdCountry]
+        })  
+      })    
+  }
+
+  removeCountry = (id) => {
+    deleteCountry(id)
+      .then((id) => {
+        const newArr = this.state.countries.filter((country) => country.id !== id);
+        this.setState({
+				  countries: newArr,
+			})
     })
   }
 
@@ -42,17 +65,23 @@ export class Countries extends React.Component {
         <h1>Paises</h1>
         <div className="row">
           <div className="col">             
-            
-              <input onChange={(e) => this.setCountry(e)}/>
-              <button onClick={this.addCountry}>Agregar</button>
-              
-            
+            <input onChange={(e) => this.setCountry(e)}/>
+            <button onClick={this.addCountry}>Agregar</button>
           </div>
           <div className="col">
             <ul>
             { 
               this.state.countries.map((item, index) => { 
-                return <li key={index}>{ item.name }</li> 
+                return (
+                  <li key={index}>
+                    { item.name } 
+                    <button 
+                      className="btn btn-danger" 
+                      onClick={() => this.removeCountry(item.id)}>
+                        X
+                    </button>
+                  </li>
+                ) 
               })
             }   
             </ul>

@@ -1,5 +1,18 @@
 import React from 'react';
 import { Storage } from "../utils/Storage";
+import {
+	createCountry,
+	deleteCountry,
+  getCountry,
+	getAllCountries, 
+	createCity,
+	deleteCity,
+  getCity,
+	getAllCities,
+	createCompany,
+	deleteCompany,
+	getAllCompanies,    
+} from '../rest/backend';
 
 export class Companies extends React.Component {
   constructor() {
@@ -13,11 +26,39 @@ export class Companies extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({
-        countries: Storage.getData('countries'),
-        cities: Storage.getData('cities'),
-        companies: Storage.getData('companies')
-    })
+    getAllCountries()
+      .then((countries) =>
+        this.setState({
+          countries: countries
+        })  
+      )
+      .catch(() =>
+        this.setState({
+          withError: true,
+        })
+      );    
+    getAllCities()
+      .then((cities) =>
+        this.setState({
+          cities: cities
+        })  
+      )
+      .catch(() =>
+        this.setState({
+          withError: true,
+        })
+      );  
+    getAllCompanies()
+      .then((companies) =>
+        this.setState({
+          companies: companies
+        })  
+      )
+      .catch(() =>
+        this.setState({
+          withError: true,
+        })
+      );      
   }
 
   addCompany = () => {
@@ -29,17 +70,43 @@ export class Companies extends React.Component {
 
     let auxCompany = { 
       name: company,
-      city: city
+      placeId: city
     };
-    
-    this.setState({
-      companies: [...this.state.companies, auxCompany]
+    createCompany(auxCompany)
+      .then((createdCompany) => {
+        this.setState({
+          companies: [...this.state.companies, createdCompany]
+        })  
+      })    
+  }
+
+  findById = (id) => {
+    id = parseInt(id) 
+    //console.log('id:' + id)
+    //console.log(JSON.stringify(this.state.countries))
+    let auxCity = this.state.cities.filter((city) => parseInt(city.id) === id)
+    if(auxCity.length > 0 ) {
+      //console.log(JSON.stringify(auxCountry) + ' - ' + id)
+      return auxCity[0].name
+    } else {
+      return 'Sin Ciudad'
+    }
+  }
+
+  removeCompany = (id) => {
+    deleteCompany(id)
+      .then((id) => {
+        const newArr = this.state.companies.filter((company) => company.id !== id);
+        this.setState({
+				  companies: newArr,
+			})
     })
   }
 
   inputChange(e) {
     if(e.target.id === 'country'){ 
-      this.setState({citiesOptions: Storage.filterData('cities','country',e.target.value) });
+      let aux = this.state.cities.filter(items => items.countrieId === e.target.value);
+      this.setState({citiesOptions: aux });
     }
   }
 
@@ -98,13 +165,18 @@ export class Companies extends React.Component {
               this.state.companies.map((item, index) => { 
                 return (
                   <li key={index}>
-                    { item.name } - {Storage.findById('cities', item.city)} 
+                    { item.name } - 
+                    {this.findById(item.placeId)} 
+                    <button 
+                      className="btn btn-danger" 
+                      onClick={() => this.removeCompany(item.id)}>
+                        X
+                    </button>
                   </li>
                 ) 
               })
             }   
             </ul>
-            <button onClick={this.saveData}>Guardar</button>
           </div>
         </div>
       </div>
